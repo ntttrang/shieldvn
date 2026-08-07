@@ -13,15 +13,17 @@ export interface ScamAnalysisResponse {
   extracted_entities: ExtractedEntities;
 }
 
-export async function analyzeText(text: string): Promise<ScamAnalysisResponse> {
+export async function analyze(text: string, image?: File | null): Promise<ScamAnalysisResponse> {
   const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
   
+  const formData = new FormData();
+  if (text) formData.append("text_prompt", text);
+  if (image) formData.append("image", image);
+
   const response = await fetch(`${apiUrl}/api/v1/analyze`, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ text_prompt: text }),
+    // Do not set Content-Type header manually when using FormData, browser will set it with boundary
+    body: formData,
   });
 
   if (!response.ok) {

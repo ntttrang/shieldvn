@@ -25,11 +25,12 @@ func NewGeminiService(ctx context.Context, apiKey string) (*GeminiService, error
 	return &GeminiService{client: client}, nil
 }
 
-func (s *GeminiService) Analyze(ctx context.Context, prompt string) (*model.AnalysisResult, error) {
+func (s *GeminiService) Analyze(ctx context.Context, prompt string, imageBytes []byte, mimeType string) (*model.AnalysisResult, error) {
 	modelName := "gemini-2.5-flash"
 
 	systemInstruction := `You are ShieldVN, a privacy-first scam detection assistant for Vietnamese users. 
-Analyze the provided text for potential scams, focusing on common typologies in Vietnam (e.g., CTV recruitment scams requiring deposits, fake bills/transfers, impersonation of officials or VNeID). 
+Analyze the provided text and/or image for potential scams, focusing on common typologies in Vietnam (e.g., CTV recruitment scams requiring deposits, fake bills/transfers, impersonation of officials or VNeID). 
+If an image is provided (e.g. a transfer bill), check for signs of forgery like mismatched fonts, missing FT codes, or incorrect layouts.
 Extract any entities like bank accounts, phone numbers, or URLs.
 Return the result strictly as a structured JSON object matching the provided schema.`
 
@@ -85,14 +86,20 @@ Return the result strictly as a structured JSON object matching the provided sch
 		ResponseSchema:   schema,
 	}
 
+	var parts []*genai.Part
+	if prompt != "" {
+		parts = append(parts, &genai.Part{Text: prompt})
+	}
+	if len(imageBytes) > 0 {
+		parts = append(parts, genai.NewPartFromBytes(imageBytes, mimeType))
+	}
+
 	// Retry logic (1 retry fallback)
 	var lastErr error
 	for i := 0; i < 2; i++ {
 		resp, err := s.client.Models.GenerateContent(ctx, modelName, []*genai.Content{
 			{
-				Parts: []*genai.Part{
-					{Text: prompt},
-				},
+				Parts: parts,
 			},
 		}, config)
 		if err != nil {

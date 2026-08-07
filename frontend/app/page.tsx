@@ -1,25 +1,27 @@
 "use client";
 
 import { useState } from "react";
-import { analyzeText, ScamAnalysisResponse } from "@/lib/api";
+import { analyze, ScamAnalysisResponse } from "@/lib/api";
 import { RiskCard } from "@/components/risk-card";
 import { EvidenceList } from "@/components/evidence-list";
-import { HelpCircle, Lock, ArrowRight, ArrowLeft, ImagePlus, Loader2 } from "lucide-react";
+import { HelpCircle, Lock, ArrowRight, ArrowLeft, Loader2 } from "lucide-react";
+import { Uploader } from "@/components/uploader";
 
 export default function Home() {
   const [text, setText] = useState("");
+  const [image, setImage] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<ScamAnalysisResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!text.trim()) return;
+    if (!text.trim() && !image) return;
 
     setLoading(true);
     setError(null);
     try {
-      const data = await analyzeText(text);
+      const data = await analyze(text, image);
       setResult(data);
     } catch (err: any) {
       setError(err.message || "Không kết nối được với máy chủ. Kiểm tra mạng và thử lại nhé.");
@@ -31,6 +33,7 @@ export default function Home() {
   const handleReset = () => {
     setResult(null);
     setText("");
+    setImage(null);
     setError(null);
   };
 
@@ -86,20 +89,7 @@ export default function Home() {
               </p>
 
               <form onSubmit={handleSubmit} className="flex flex-col flex-1">
-                <div 
-                  className="border-2 border-dashed border-[#BBD4D2] rounded-xl bg-surface p-[26px_16px] text-center cursor-pointer transition-all duration-150 hover:border-brand hover:bg-brand-tint"
-                  role="button"
-                  tabIndex={0}
-                  aria-label="Tải ảnh màn hình"
-                >
-                  <div className="w-[46px] h-[46px] rounded-xl bg-brand-tint text-brand flex items-center justify-center mx-auto mb-3">
-                    <ImagePlus className="w-6 h-6" />
-                  </div>
-                  <p className="text-[17px] font-semibold m-0 mb-0.5">Tải ảnh màn hình</p>
-                  <p className="text-[14px] text-muted m-0 mb-2.5">Kéo thả hoặc chạm để chọn</p>
-                  <p className="text-[12px] text-[#94A3B8] tracking-[0.02em]">JPG · PNG · tối đa 5MB</p>
-                  <p className="text-xs text-muted mt-2 italic">(Tính năng đang phát triển)</p>
-                </div>
+                <Uploader onImageChange={setImage} disabled={loading} />
 
                 <div className="flex items-center gap-3 text-[#94A3B8] text-[12px] font-semibold tracking-[0.08em] my-4 before:content-[''] before:h-px before:bg-line before:flex-1 after:content-[''] after:h-px after:bg-line after:flex-1">
                   HOẶC
@@ -124,7 +114,7 @@ export default function Home() {
                 <div className="mt-[18px]">
                   <button
                     type="submit"
-                    disabled={!text.trim()}
+                    disabled={!text.trim() && !image}
                     className="flex items-center justify-center gap-[9px] w-full min-h-[52px] border-none rounded-[10px] text-[17px] font-semibold cursor-pointer transition-all duration-150 bg-brand text-white hover:bg-brand-600 disabled:bg-[#B7C9C7] disabled:text-white disabled:cursor-not-allowed"
                   >
                     Kiểm tra ngay
