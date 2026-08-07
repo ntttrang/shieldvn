@@ -87,11 +87,40 @@ appeals/{id}:  { report_id, claimant_proof, status, created_at }
 - Free tier Gemini đủ demo. Firestore/Sheets free tier dư.
 - Mở CORS đúng `ALLOWED_ORIGIN` = URL frontend.
 
-## 8. Rollback / Ops
+## 8. Observability (Implemented — Phase 0)
 
-- Cloud Run revision history — rollback 1 lệnh.
-- Logs: Cloud Logging. **Không log PII** (chỉ metadata: request id, latency, verdict level).
-- Healthcheck: `GET /healthz` trả 200.
+### Structured Logging (slog → Cloud Logging)
+
+- All logs are **structured JSON** on stdout via Go stdlib `slog` (zero dependency).
+- Cloud Run auto-ingests stdout → **Cloud Logging**. Each log line includes `time`, `level`, `msg`, and structured metadata.
+- Every request's logs carry `request_id` (from `X-Request-ID` header or auto-generated) for end-to-end tracing in Cloud Logging.
+- Log level controlled by env var `LOG_LEVEL` (values: `debug`, `info`, `warn`, `error`; default: `info`).
+- **PII is never logged.** The `LogMeta` helper only accepts a fixed set of metadata keys (`request_id`, `latency_ms`, `verdict_level`, `error_type`, `tier`, `gemini_model`, `attempt`, `status`). Unknown keys are dropped with a warning. Phone numbers, bank accounts, national IDs, prompts, and image bytes cannot reach logs by construction.
+
+### Distributed Tracing (OpenTelemetry → Cloud Trace)
+
+- `otelgin` middleware creates a **root span** for every HTTP request → auto-exported to **Cloud Trace** on Cloud Run.
+- Outbound Gemini SDK calls use an `otelhttp`-instrumented HTTP client → each API call appears as a **child span**.
+- Cloud Run auto-correlates log lines ↔ trace via `logging.googleapis.com/trace` (when trace ID is emitted).
+- Custom business spans (Firestore lookup, image masking) are added inline during feature phases 2–8.
+
+### Environment Variables
+
+| Variable | Required | Default | Purpose |
+|---|---|---|---|
+| `LOG_LEVEL` | No | `info` | slog level (`debug`/`info`/`warn`/`error`) |
+| `GOOGLE_CLOUD_PROJECT` | On Cloud Run | — | GCP project ID for OTel exporters |
+| `K_REVISION` | Auto-set | — | Cloud Run revision (triggers real exporters) |
+
+### No-Op Fallback (Dev / CI)
+
+When `K_REVISION` is not set (i.e., not on Cloud Run), all OTel providers initialize as **no-op** — zero network calls, zero errors, no GCP credentials needed. The app boots and serves `/healthz` 200 with full logging but no trace export. This keeps `go test` and local dev frictionless.
+
+### Ops Basics
+
+- Cloud Run revision history — rollback via single `gcloud` command.
+- Healthcheck: `GET /healthz` returns `200 OK`.
+- Graceful shutdown: `SIGTERM` → HTTP server drains → OTel providers flush → clean exit.
 
 ## 9. Pre-Submit Checklist
 

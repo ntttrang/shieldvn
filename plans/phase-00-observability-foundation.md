@@ -1,7 +1,7 @@
 ---
 phase: 0
 title: "Observability Foundation (slog + request-id + OTel → GCP)"
-status: pending
+status: completed
 priority: P2
 effort: "10h (~1.5d)"
 dependencies: []
