@@ -4,6 +4,8 @@ import (
 	"log/slog"
 	"os"
 	"strings"
+
+	"github.com/joho/godotenv"
 )
 
 // Config holds application configuration loaded from environment variables.
@@ -17,6 +19,9 @@ type Config struct {
 
 // Load reads configuration from environment variables with sensible defaults.
 func Load() *Config {
+	// Attempt to load .env file, ignore error if it doesn't exist
+	_ = godotenv.Load()
+
 	return &Config{
 		Port:          getEnv("PORT", "8080"),
 		AllowedOrigin: getEnv("ALLOWED_ORIGIN", "http://localhost:3000"),

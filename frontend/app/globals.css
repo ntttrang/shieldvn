@@ -1,0 +1,50 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand: #006B6B;
+  --color-brand-600: #00766C;
+  --color-brand-tint: #E6F7F5;
+  
+  --color-ink: #0F172A;
+  --color-muted: #475569;
+  
+  --color-bg: #F0F8F6;
+  --color-surface: #FFFFFF;
+  --color-line: #E2E8F0;
+  
+  --color-verdict-green: #15803D;
+  --color-verdict-green-bg: #E8F8EE;
+  --color-verdict-green-border: #BBF7D0;
+  --color-verdict-green-dot: #00A651;
+  
+  --color-verdict-yellow: #FFC107;
+  --color-verdict-yellow-ink: #5A3E00;
+  --color-verdict-yellow-bg: #FFFBEB;
+  --color-verdict-yellow-border: #FDE68A;
+  --color-verdict-yellow-dot: #FFC107;
+  
+  --color-verdict-red: #DC2626;
+  --color-verdict-red-bg: #FEF2F2;
+  --color-verdict-red-border: #FECACA;
+  --color-verdict-red-dot: #FF3B30;
+  
+  --font-sans: "Be Vietnam Pro", system-ui, sans-serif;
+}
+
+@layer base {
+  * {
+    border-color: var(--color-line);
+  }
+  body {
+    background-color: var(--color-bg);
+    color: var(--color-ink);
+    -webkit-font-smoothing: antialiased;
+    font-family: var(--font-sans);
+  }
+}
+
+@layer utilities {
+  .shadow-app {
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06), 0 8px 24px rgba(15, 23, 42, 0.06);
+  }
+}

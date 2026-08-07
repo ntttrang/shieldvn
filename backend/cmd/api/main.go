@@ -11,8 +11,10 @@ import (
 	"time"
 
 	"shieldvn-backend/internal/config"
+	"shieldvn-backend/internal/handler"
 	"shieldvn-backend/internal/handler/middleware"
 	"shieldvn-backend/internal/observability"
+	"shieldvn-backend/internal/service"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -38,6 +40,13 @@ func main() {
 	})
 	if err != nil {
 		slog.Error("failed to initialize telemetry", "error", err)
+		os.Exit(1)
+	}
+
+	// Step 4: Initialize Gemini Service
+	geminiSvc, err := service.NewGeminiService(ctx, cfg.GeminiAPIKey)
+	if err != nil {
+		slog.Error("failed to initialize gemini service", "error", err)
 		os.Exit(1)
 	}
 
@@ -67,11 +76,7 @@ func main() {
 	// API routes — Phase 01 fills in the real handler.
 	v1 := router.Group("/api/v1")
 	{
-		v1.POST("/analyze", func(c *gin.Context) {
-			c.JSON(http.StatusNotImplemented, gin.H{
-				"error": "not implemented — see Phase 01",
-			})
-		})
+		v1.POST("/analyze", handler.AnalyzeHandler(geminiSvc))
 	}
 
 	// Start HTTP server.

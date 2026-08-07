@@ -1,0 +1,548 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ShieldVN — UI Mockup</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   ShieldVN — UI Mockup (static, no API, all data is sample)
+   Palette derived from docs/app-icon.png & docs/logo-icon.png:
+   brand = deep teal #006B6B, mint bg, traffic-light verdicts.
+   Tokens per docs/02-design-guidelines.md
+   ============================================================ */
+:root{
+  --brand:#006B6B;        /* deep teal — ShieldVN signature (logo) */
+  --brand-600:#00766C;    /* hover/active (white text ~4.6:1) */
+  --brand-tint:#E6F7F5;   /* soft mint (logo inner gradient) */
+  --ink:#0F172A; --muted:#475569; --bg:#F0F8F6; --surface:#FFFFFF; --line:#E2E8F0;
+  --green:#15803D; --green-bg:#E8F8EE; --green-border:#BBF7D0;   /* AA-safe fill (4.5:1) */
+  --yellow:#B45309;       /* text/marks on light bg */
+  --yellow-gold:#FFC107;  /* band/badge fill (logo gold) */
+  --yellow-ink:#5A3E00;   /* dark text on gold (≈6:1) */
+  --yellow-bg:#FFFBEB; --yellow-border:#FDE68A;
+  --red:#DC2626; --red-bg:#FEF2F2; --red-border:#FECACA;         /* AA-safe fill (4.8:1) */
+  --r-card:12px; --r-btn:10px;
+  --shadow:0 1px 2px rgba(15,23,42,.06), 0 12px 32px rgba(15,23,42,.10);
+  font-family:'Be Vietnam Pro', system-ui, -apple-system, sans-serif;
+  color:var(--ink);
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--bg); min-height:100vh; -webkit-font-smoothing:antialiased}
+.icon{width:24px;height:24px;stroke:currentColor;stroke-width:2;fill:none;
+  stroke-linecap:round;stroke-linejoin:round;flex:none}
+.icon-sm{width:18px;height:18px}
+.icon-lg{width:30px;height:30px}
+
+/* ---------- Control bar (mockup chrome only) ---------- */
+.bar{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.92);
+  backdrop-filter:saturate(140%) blur(8px);border-bottom:1px solid var(--line)}
+.bar-inner{max-width:980px;margin:0 auto;padding:10px 16px;display:flex;
+  flex-wrap:wrap;gap:14px;align-items:center;justify-content:center}
+.bar-group{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.bar-label{font-size:11px;font-weight:600;color:#94A3B8;letter-spacing:.06em;
+  text-transform:uppercase;margin-right:2px}
+.chip-btn{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);
+  background:#fff;color:var(--ink);font-family:inherit;font-size:13px;font-weight:500;
+  padding:7px 12px;border-radius:999px;cursor:pointer;transition:all .15s ease-out}
+.chip-btn:hover{border-color:var(--brand);color:var(--brand)}
+.chip-btn.is-active{background:var(--brand);border-color:var(--brand);color:#fff}
+.chip-btn.is-active .dot{box-shadow:0 0 0 2px rgba(255,255,255,.4)}
+.dot{width:10px;height:10px;border-radius:3px;display:inline-block}
+.dot.red{background:#FF3B30}.dot.yellow{background:#FFC107}.dot.green{background:#00A651}
+
+/* ---------- App frame ---------- */
+.stage{padding:28px 16px 64px;display:flex;flex-direction:column;align-items:center}
+.frame{width:100%;max-width:480px;background:var(--bg);border-radius:24px;
+  overflow:hidden;box-shadow:var(--shadow);border:1px solid var(--line)}
+.view{display:none}
+.view.is-active{display:block}
+.screen{padding:14px 16px 28px}
+
+/* ---------- Header ---------- */
+.app-header{display:flex;align-items:center;justify-content:space-between;
+  padding:14px 4px 18px}
+.brand{display:flex;align-items:center;gap:9px;font-weight:700;font-size:18px;letter-spacing:-.01em}
+.brand-logo{width:32px;height:32px;border-radius:8px;object-fit:contain;flex:none}
+.icon-btn{width:40px;height:40px;border-radius:10px;border:1px solid var(--line);
+  background:#fff;display:grid;place-items:center;cursor:pointer;color:var(--muted)}
+.icon-btn:hover{color:var(--brand);border-color:var(--brand)}
+.app-header.result{justify-content:flex-start;gap:12px}
+
+/* ---------- Hero text ---------- */
+.h1{font-size:24px;font-weight:700;line-height:1.2;margin:2px 0 6px;letter-spacing:-.02em}
+.subtitle{color:var(--muted);font-size:16px;line-height:1.45;margin:0 0 18px}
+
+/* ---------- Upload zone ---------- */
+.upload-zone{border:2px dashed #BBD4D2;border-radius:var(--r-card);background:var(--surface);
+  padding:26px 16px;text-align:center;cursor:pointer;transition:all .18s ease-out}
+.upload-zone:hover{border-color:var(--brand);background:var(--brand-tint)}
+.upload-zone .up-icon{width:46px;height:46px;border-radius:12px;background:var(--brand-tint);
+  color:var(--brand);display:grid;place-items:center;margin:0 auto 12px}
+.upload-zone .up-title{font-size:17px;font-weight:600;margin:0 0 3px}
+.upload-zone .up-sub{font-size:14px;color:var(--muted);margin:0 0 10px}
+.upload-zone .up-meta{font-size:12px;color:#94A3B8;letter-spacing:.02em}
+
+.thumb-row{display:flex;align-items:center;gap:12px;border:1px solid var(--line);
+  background:var(--surface);border-radius:var(--r-card);padding:10px}
+.thumb{width:46px;height:46px;border-radius:8px;background:linear-gradient(135deg,#E6F7F5,#C2E8E3);
+  display:grid;place-items:center;color:var(--brand);flex:none}
+.thumb-row .fname{font-size:14px;font-weight:500;margin:0}
+.thumb-row .fsize{font-size:12px;color:var(--muted);margin:0}
+.thumb-row .rm{margin-left:auto;width:32px;height:32px;border-radius:8px;border:none;
+  background:#F1F5F9;color:var(--muted);display:grid;place-items:center;cursor:pointer}
+
+.divider{display:flex;align-items:center;gap:12px;color:#94A3B8;font-size:12px;
+  font-weight:600;letter-spacing:.08em;margin:16px 0}
+.divider::before,.divider::after{content:"";height:1px;background:var(--line);flex:1}
+
+/* ---------- Textarea ---------- */
+.field textarea{width:100%;min-height:108px;resize:vertical;border:1px solid var(--line);
+  border-radius:var(--r-btn);padding:12px 14px;font-family:inherit;font-size:16px;color:var(--ink);
+  background:var(--surface);outline:none;transition:border-color .15s, box-shadow .15s}
+.field textarea:focus{border-color:var(--brand);box-shadow:0 0 0 3px rgba(0,107,107,.16)}
+.field textarea::placeholder{color:#94A3B8}
+
+/* ---------- Privacy banner ---------- */
+.privacy{display:flex;gap:10px;align-items:flex-start;background:var(--brand-tint);
+  border:1px solid #BFE9E5;border-radius:var(--r-btn);padding:11px 13px;margin-top:4px}
+.privacy .ic{color:var(--brand);margin-top:1px}
+.privacy p{margin:0;font-size:13.5px;line-height:1.4;color:#005050}
+
+/* ---------- Buttons ---------- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;width:100%;
+  min-height:52px;border:none;border-radius:var(--r-btn);font-family:inherit;font-size:17px;
+  font-weight:600;cursor:pointer;transition:all .15s ease-out}
+.btn-primary{background:var(--brand);color:#fff}
+.btn-primary:hover{background:var(--brand-600)}
+.btn-primary:disabled{background:#B7C9C7;color:#fff;cursor:not-allowed}
+.btn-ghost{background:var(--surface);color:var(--ink);border:1px solid var(--line)}
+.btn-ghost:hover{border-color:var(--brand);color:var(--brand)}
+.btn-sm{min-height:46px;font-size:15px}
+.btn-row{display:flex;gap:10px}
+.btn-row .btn{width:auto;flex:1}
+
+.microcopy{text-align:center;color:#94A3B8;font-size:13px;margin-top:14px}
+
+/* ---------- Verdict band ---------- */
+.band{border-radius:var(--r-card);padding:18px 16px;margin-bottom:16px}
+.band.red{background:var(--red);color:#fff}
+.band.green{background:var(--green);color:#fff}
+.band.yellow{background:var(--yellow-gold);color:var(--yellow-ink)}
+.band .b-top{display:flex;align-items:center;gap:10px}
+.band .b-ic{width:40px;height:40px;border-radius:10px;background:rgba(255,255,255,.22);
+  display:grid;place-items:center;flex:none}
+.band.yellow .b-ic{background:rgba(90,62,0,.12);color:var(--yellow-ink)}
+.band .b-label{font-size:26px;font-weight:700;line-height:1;letter-spacing:-.01em}
+.band .b-guide{font-size:18px;font-weight:500;margin:10px 0 12px;line-height:1.3}
+.conf{display:flex;align-items:center;gap:10px}
+.band .conf-txt{font-size:13px;font-weight:500;opacity:.92;min-width:96px}
+.conf-track{flex:1;height:8px;border-radius:999px;background:rgba(255,255,255,.28);overflow:hidden}
+.band.yellow .conf-track{background:rgba(90,62,0,.2)}
+.conf-fill{height:100%;border-radius:999px;background:rgba(255,255,255,.95)}
+.band.yellow .conf-fill{background:rgba(90,62,0,.85)}
+
+/* ---------- Section / cards ---------- */
+.sec-h{font-size:17px;font-weight:700;margin:4px 0 9px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-card);
+  padding:14px 15px;margin-bottom:12px}
+.ev{list-style:none;margin:0;padding:0}
+.ev li{display:flex;gap:10px;padding:7px 0;font-size:16px;line-height:1.4;border-bottom:1px dashed var(--line)}
+.ev li:last-child{border-bottom:none}
+.ev .bullet{width:8px;height:8px;border-radius:50%;margin-top:9px;flex:none}
+.ev .bullet.red{background:var(--red)}.ev .bullet.yellow{background:#D9A300}.ev .bullet.green{background:var(--green)}
+.rec{list-style:none;margin:0;padding:0}
+.rec li{display:flex;gap:11px;align-items:flex-start;padding:8px 0;font-size:16px;line-height:1.4}
+.rec .check{width:24px;height:24px;border-radius:50%;flex:none;display:grid;place-items:center;margin-top:1px}
+.rec .check.red{background:var(--red-bg);color:var(--red)}
+.rec .check.yellow{background:var(--yellow-bg);color:var(--yellow)}
+.rec .check.green{background:var(--green-bg);color:var(--green)}
+.rec strong{font-weight:700}
+.link-foot{display:block;text-align:center;color:var(--muted);font-size:14px;margin-top:14px}
+.link-foot a{color:var(--brand);font-weight:500;text-decoration:none}
+
+/* ---------- Loading ---------- */
+.loading-card{text-align:center;padding:34px 16px 30px;background:var(--surface);
+  border:1px solid var(--line);border-radius:var(--r-card);margin-top:6px}
+.radar{position:relative;width:104px;height:104px;margin:0 auto 18px}
+.radar::before,.radar::after{content:"";position:absolute;border-radius:50%;
+  border:1.5px solid rgba(0,107,107,.35)}
+.radar::before{inset:0}.radar::after{inset:22px;border-color:rgba(0,107,107,.25)}
+.radar-core{position:absolute;left:50%;top:50%;width:40px;height:40px;transform:translate(-50%,-50%);
+  background:var(--brand);border-radius:10px;display:grid;place-items:center;color:#fff;
+  box-shadow:0 0 0 6px rgba(0,107,107,.12)}
+.radar-sweep{position:absolute;inset:0;border-radius:50%;
+  background:conic-gradient(from 0deg, rgba(0,107,107,0) 0deg, rgba(0,107,107,0) 250deg, rgba(0,107,107,.45) 350deg, rgba(0,107,107,.6) 360deg);
+  animation:sweep 1.5s linear infinite}
+@keyframes sweep{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.radar-sweep{animation:none;opacity:.4}}
+.loading-card .l-title{font-size:18px;font-weight:600;margin:0 0 14px}
+.steps{display:flex;flex-direction:column;gap:9px;text-align:left;max-width:300px;margin:0 auto}
+.step{display:flex;align-items:center;gap:10px;font-size:15px;color:var(--muted)}
+.step.done{color:var(--ink)}
+.step.done .s-ic{background:var(--green);color:#fff}
+.step.active{color:var(--brand);font-weight:600}
+.step.active .s-ic{background:var(--brand);color:#fff}
+.step .s-ic{width:22px;height:22px;border-radius:50%;background:#E2E8F0;color:#fff;
+  display:grid;place-items:center;flex:none}
+
+/* ---------- Error ---------- */
+.error-card{display:flex;gap:11px;align-items:flex-start;background:var(--red-bg);
+  border:1px solid var(--red-border);border-radius:var(--r-btn);padding:13px 14px}
+.error-card .ic{color:var(--red);margin-top:1px}
+.error-card p{margin:0 0 12px;font-size:15px;color:#7F1D1D;line-height:1.4}
+.error-card .btn{min-height:44px;font-size:15px;background:var(--red);color:#fff}
+.error-card .btn:hover{background:#B91C1C}
+
+/* ---------- Warning card preview ---------- */
+.warn-wrap{display:flex;flex-direction:column;align-items:center}
+.warn-card{width:100%;max-width:340px;aspect-ratio:4/5;border-radius:var(--r-card);
+  overflow:hidden;box-shadow:var(--shadow);display:flex;flex-direction:column;background:#0F172A}
+.warn-band{padding:16px 18px;display:flex;align-items:center;gap:10px;color:#fff}
+.warn-band.red{background:var(--red)}
+.warn-band .wb-lbl{font-size:24px;font-weight:700;line-height:1}
+.warn-band .wb-pct{margin-left:auto;font-size:15px;font-weight:600;opacity:.95}
+.warn-body{flex:1;padding:20px 18px;display:flex;flex-direction:column;background:#fff;color:var(--ink)}
+.warn-body .wb-h{font-size:13px;font-weight:700;letter-spacing:.08em;color:var(--red);text-transform:uppercase;margin:0 0 6px}
+.warn-body .wb-title{font-size:20px;font-weight:700;line-height:1.25;margin:0 0 16px}
+.warn-evid{display:flex;gap:9px;font-size:14.5px;line-height:1.4;color:var(--ink);
+  background:var(--red-bg);border:1px solid var(--red-border);border-radius:10px;padding:10px 12px;margin-bottom:12px}
+.warn-evid .ic{color:var(--red);margin-top:1px}
+.warn-conf{font-size:14px;color:var(--muted);margin-bottom:auto}
+.warn-conf b{color:var(--ink);font-size:16px}
+.warn-foot{border-top:1px solid var(--line);padding-top:14px;display:flex;align-items:center;gap:12px}
+.warn-qr{width:58px;height:58px;border-radius:8px;background:repeating-conic-gradient(#0F172A 0% 25%, #fff 0% 50%) 50%/14px 14px;
+  border:1px solid var(--line);flex:none}
+.warn-foot .wf-brand{display:flex;align-items:center;gap:8px;font-weight:700;font-size:15px}
+.warn-foot .wf-url{font-size:12px;color:var(--muted)}
+.warn-actions{display:flex;gap:10px;width:100%;max-width:340px;margin-top:16px}
+.warn-actions .btn{flex:1;width:auto}
+.mock-note{text-align:center;color:#94A3B8;font-size:12px;margin-top:22px;max-width:480px}
+</style>
+</head>
+<body>
+
+<!-- ===================== CONTROL BAR (mockup chrome) ===================== -->
+<div class="bar">
+  <div class="bar-inner">
+    <div class="bar-group">
+      <span class="bar-label">Màn hình</span>
+      <button class="chip-btn is-active" data-target="v-upload">Tải lên</button>
+      <button class="chip-btn" data-target="v-loading">Đang phân tích</button>
+      <button class="chip-btn" data-target="v-error">Lỗi</button>
+    </div>
+    <div class="bar-group">
+      <span class="bar-label">Kết quả</span>
+      <button class="chip-btn" data-target="v-red"><span class="dot red"></span>Nguy hiểm</button>
+      <button class="chip-btn" data-target="v-yellow"><span class="dot yellow"></span>Cẩn thận</button>
+      <button class="chip-btn" data-target="v-green"><span class="dot green"></span>An toàn</button>
+    </div>
+    <div class="bar-group">
+      <span class="bar-label">Khác</span>
+      <button class="chip-btn" data-target="v-warning">Thiệp cảnh báo</button>
+    </div>
+  </div>
+</div>
+
+<div class="stage">
+  <div class="frame">
+
+    <!-- ===================== UPLOAD (empty) ===================== -->
+    <section class="view is-active" id="v-upload">
+      <div class="screen">
+        <div class="app-header">
+          <div class="brand">
+            <img class="brand-logo" src="../../docs/logo-icon.png" alt="ShieldVN">
+            ShieldVN
+          </div>
+          <button class="icon-btn" aria-label="Trợ giúp"><svg class="icon icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg></button>
+        </div>
+
+        <h1 class="h1">Kiểm tra lừa đảo trong 10 giây</h1>
+        <p class="subtitle">Tải ảnh hoặc dán tin nhắn đáng ngờ để nhận kết quả ngay.</p>
+
+        <div class="upload-zone" role="button" tabindex="0" aria-label="Tải ảnh màn hình">
+          <div class="up-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div>
+          <p class="up-title">Tải ảnh màn hình</p>
+          <p class="up-sub">Kéo thả hoặc chạm để chọn</p>
+          <p class="up-meta">JPG · PNG · tối đa 5MB</p>
+        </div>
+
+        <div class="divider">HOẶC</div>
+
+        <div class="field">
+          <textarea placeholder="Dán tin nhắn / link đáng ngờ vào đây…&#10;VD: Tuyển CTV nạp tiền chốt đơn, hoa hồng cao…"></textarea>
+        </div>
+
+        <div class="privacy">
+          <span class="ic"><svg class="icon icon-sm" viewBox="0 0 24 24"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>
+          <p>Thông tin nhạy cảm (SĐT, STK, CCCD) tự bị <strong>CHE</strong> trước khi AI phân tích.</p>
+        </div>
+
+        <div style="margin-top:18px">
+          <button class="btn btn-primary" disabled>
+            Kiểm tra ngay
+            <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          </button>
+        </div>
+        <p class="microcopy">Đã kiểm tra 12.480 tin nhắn</p>
+      </div>
+    </section>
+
+    <!-- ===================== LOADING ===================== -->
+    <section class="view" id="v-loading">
+      <div class="screen">
+        <div class="app-header">
+          <div class="brand">
+            <img class="brand-logo" src="../../docs/logo-icon.png" alt="ShieldVN">
+            ShieldVN
+          </div>
+        </div>
+        <h1 class="h1">Kiểm tra lừa đảo trong 10 giây</h1>
+
+        <div class="loading-card">
+          <div class="radar">
+            <div class="radar-sweep"></div>
+            <div class="radar-core"><svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+          </div>
+          <p class="l-title">Đang phân tích…</p>
+          <div class="steps">
+            <div class="step done"><span class="s-ic"><svg class="icon" style="width:13px;height:13px;stroke-width:3" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></span>Đã che thông tin nhạy cảm</div>
+            <div class="step done"><span class="s-ic"><svg class="icon" style="width:13px;height:13px;stroke-width:3" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></span>Đã đối chiếu danh sách lừa đảo</div>
+            <div class="step active"><span class="s-ic"><svg class="icon" style="width:13px;height:13px;stroke-width:3" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/></svg></span>AI đang đọc ảnh & so chép phông chữ…</div>
+            <div class="step"><span class="s-ic"></span>Tổng hợp bằng chứng</div>
+          </div>
+        </div>
+        <div style="margin-top:18px"><button class="btn btn-primary" disabled>
+          <svg class="icon icon-sm" style="animation:sweep .9s linear infinite" viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+          Đang kiểm tra…
+        </button></div>
+      </div>
+    </section>
+
+    <!-- ===================== ERROR ===================== -->
+    <section class="view" id="v-error">
+      <div class="screen">
+        <div class="app-header">
+          <div class="brand">
+            <img class="brand-logo" src="../../docs/logo-icon.png" alt="ShieldVN">
+            ShieldVN
+          </div>
+          <button class="icon-btn" aria-label="Trợ giúp"><svg class="icon icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg></button>
+        </div>
+        <h1 class="h1">Kiểm tra lừa đảo trong 10 giây</h1>
+
+        <div class="thumb-row" style="margin-bottom:14px">
+          <div class="thumb"><svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div>
+          <div><p class="fname">bill-vietqr.jpg</p><p class="fsize">1,2 MB</p></div>
+          <button class="rm" aria-label="Xoá ảnh"><svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+        </div>
+
+        <div class="error-card" role="alert">
+          <span class="ic"><svg class="icon icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></span>
+          <div style="flex:1">
+            <p>Không kết nối được với máy chủ. Kiểm tra mạng và thử lại nhé.</p>
+            <button class="btn btn-sm">Thử lại</button>
+          </div>
+        </div>
+        <p class="microcopy">Ảnh của bạn không bao giờ được lưu — xử lý trong RAM rồi xoá.</p>
+      </div>
+    </section>
+
+    <!-- ===================== RESULT: RED ===================== -->
+    <section class="view" id="v-red">
+      <div class="screen">
+        <div class="app-header result">
+          <button class="icon-btn" aria-label="Quay lại"><svg class="icon icon-sm" viewBox="0 0 24 24"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg></button>
+          <div class="brand"><img class="brand-logo" src="../../docs/logo-icon.png" alt="ShieldVN">ShieldVN</div>
+        </div>
+
+        <div class="band red">
+          <div class="b-top">
+            <span class="b-ic"><svg class="icon icon-lg" viewBox="0 0 24 24"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg></span>
+            <span class="b-label">NGUY HIỂM</span>
+          </div>
+          <p class="b-guide">Không chuyển tiền.</p>
+          <div class="conf">
+            <span class="conf-txt">Độ tin cậy 92%</span>
+            <span class="conf-track"><span class="conf-fill" style="width:92%"></span></span>
+          </div>
+        </div>
+
+        <div class="sec-h">Tại sao lại vậy?</div>
+        <div class="card">
+          <ul class="ev">
+            <li><span class="bullet red"></span><span>Số tài khoản <strong>98XX…2103</strong> nằm trong danh sách lừa đảo chính thức.</span></li>
+            <li><span class="bullet red"></span><span>Ép đóng "phí mở kênh" trước khi nhận việc — dấu hiệu lừa đảo việc làm.</span></li>
+            <li><span class="bullet red"></span><span>Tên người nhận trùng với <strong>3 báo cáo</strong> gần đây nhất.</span></li>
+          </ul>
+        </div>
+
+        <div class="sec-h">Bạn nên làm gì</div>
+        <div class="card">
+          <ul class="rec">
+            <li><span class="check red"><svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></span><span><strong>DỪNG</strong> — không chuyển tiền ứng trước.</span></li>
+            <li><span class="check red"><svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></span><span>Chặn và báo cáo số này trên Zalo.</span></li>
+            <li><span class="check red"><svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></span><span>Gọi <strong>156</strong> (CSKH ngân hàng) nếu đã chuyển.</span></li>
+          </ul>
+        </div>
+
+        <div class="btn-row" style="margin-top:6px">
+          <button class="btn btn-primary btn-sm"><svg class="icon icon-sm" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>Tạo thiệp cảnh báo</button>
+          <button class="btn btn-ghost btn-sm"><svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M3 2v6h6"/><path d="M3 13a9 9 0 1 0 3-7.7L3 8"/></svg>Kiểm tra tiếp</button>
+        </div>
+        <span class="link-foot">Kết quả sai? <a href="#">Báo cáo lại</a></span>
+      </div>
+    </section>
+
+    <!-- ===================== RESULT: YELLOW ===================== -->
+    <section class="view" id="v-yellow">
+      <div class="screen">
+        <div class="app-header result">
+          <button class="icon-btn" aria-label="Quay lại"><svg class="icon icon-sm" viewBox="0 0 24 24"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg></button>
+          <div class="brand"><img class="brand-logo" src="../../docs/logo-icon.png" alt="ShieldVN">ShieldVN</div>
+        </div>
+
+        <div class="band yellow">
+          <div class="b-top">
+            <span class="b-ic"><svg class="icon icon-lg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></span>
+            <span class="b-label">CẨN THẬN</span>
+          </div>
+          <p class="b-guide">Tìm hiểu thêm trước khi chuyển tiền.</p>
+          <div class="conf">
+            <span class="conf-txt">Độ tin cậy 64%</span>
+            <span class="conf-track"><span class="conf-fill" style="width:64%"></span></span>
+          </div>
+        </div>
+
+        <div class="sec-h">Tại sao lại vậy?</div>
+        <div class="card">
+          <ul class="ev">
+            <li><span class="bullet yellow"></span><span>Số TK <strong>chưa có</strong> trong danh sách lừa đảo — nhưng tài khoản mới mở (12 ngày).</span></li>
+            <li><span class="bullet yellow"></span><span>Yêu cầu chuyển cọc 30% giá trị đơn — bất thường với việc làm chính thức.</span></li>
+            <li><span class="bullet yellow"></span><span>Link trong tin nhắn trỏ về tên miền giả mạo nhãn hàng (chỉ sai 1 ký tự).</span></li>
+          </ul>
+        </div>
+
+        <div class="sec-h">Bạn nên làm gì</div>
+        <div class="card">
+          <ul class="rec">
+            <li><span class="check yellow"><svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></span><span>Xác minh lại tên người nhận qua <strong>tổng đài chính hãng</strong>.</span></li>
+            <li><span class="check yellow"><svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></span><span>Không bấm link — gõ tay địa chỉ web.</span></li>
+            <li><span class="check yellow"><svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></span><span>Từ chối mọi yêu cầu <strong>ứng/cọc trước</strong>.</span></li>
+          </ul>
+        </div>
+
+        <div class="btn-row" style="margin-top:6px">
+          <button class="btn btn-primary btn-sm"><svg class="icon icon-sm" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>Tạo thiệp cảnh báo</button>
+          <button class="btn btn-ghost btn-sm"><svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M3 2v6h6"/><path d="M3 13a9 9 0 1 0 3-7.7L3 8"/></svg>Kiểm tra tiếp</button>
+        </div>
+        <span class="link-foot">Kết quả sai? <a href="#">Báo cáo lại</a></span>
+      </div>
+    </section>
+
+    <!-- ===================== RESULT: GREEN ===================== -->
+    <section class="view" id="v-green">
+      <div class="screen">
+        <div class="app-header result">
+          <button class="icon-btn" aria-label="Quay lại"><svg class="icon icon-sm" viewBox="0 0 24 24"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg></button>
+          <div class="brand"><img class="brand-logo" src="../../docs/logo-icon.png" alt="ShieldVN">ShieldVN</div>
+        </div>
+
+        <div class="band green">
+          <div class="b-top">
+            <span class="b-ic"><svg class="icon icon-lg" viewBox="0 0 24 24"><path d="M21.801 10A10 10 0 1 1 17 3.335"/><path d="m9 11 3 3L22 4"/></svg></span>
+            <span class="b-label">AN TOÀN</span>
+          </div>
+          <p class="b-guide">Chưa phát hiện dấu hiệu lừa đảo.</p>
+          <div class="conf">
+            <span class="conf-txt">Độ tin cậy 88%</span>
+            <span class="conf-track"><span class="conf-fill" style="width:88%"></span></span>
+          </div>
+        </div>
+
+        <div class="sec-h">Đã kiểm tra gì</div>
+        <div class="card">
+          <ul class="ev">
+            <li><span class="bullet green"></span><span>Số TK <strong>không</strong> có trong 4 lớp danh sách lừa đảo.</span></li>
+            <li><span class="bullet green"></span><span>Không phát hiện phông chữ/giấy tờ giả mạo trong ảnh.</span></li>
+            <li><span class="bullet green"></span><span>Nội dung không chứa mẫu câu ép tiền ứng trước.</span></li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <ul class="rec">
+            <li><span class="check green"><svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></span><span>Vẫn nên cẩn thận với mọi giao dịch lạ, kể cả khi kết quả an toàn.</span></li>
+          </ul>
+        </div>
+
+        <div class="btn-row" style="margin-top:6px">
+          <button class="btn btn-primary btn-sm"><svg class="icon icon-sm" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>Chia sẻ kết quả</button>
+          <button class="btn btn-ghost btn-sm"><svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M3 2v6h6"/><path d="M3 13a9 9 0 1 0 3-7.7L3 8"/></svg>Kiểm tra tiếp</button>
+        </div>
+        <span class="link-foot">Kết quả sai? <a href="#">Báo cáo lại</a></span>
+      </div>
+    </section>
+
+    <!-- ===================== WARNING CARD ===================== -->
+    <section class="view" id="v-warning">
+      <div class="screen">
+        <div class="app-header result">
+          <button class="icon-btn" aria-label="Quay lại"><svg class="icon icon-sm" viewBox="0 0 24 24"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg></button>
+          <div class="brand">Thiệp cảnh báo</div>
+        </div>
+        <p class="subtitle">Ảnh 1080×1350 — sẵn sàng chia sẻ qua Zalo / Facebook.</p>
+
+        <div class="warn-wrap">
+          <div class="warn-card">
+            <div class="warn-band red">
+              <svg class="icon" viewBox="0 0 24 24"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
+              <span class="wb-lbl">NGUY HIỂM</span>
+              <span class="wb-pct">92%</span>
+            </div>
+            <div class="warn-body">
+              <p class="wb-h">⚠ Cảnh báo lừa đảo</p>
+              <p class="wb-title">"Tuyển CTV nạp tiền — hoa hồng cao, ứng trước phí mở kênh"</p>
+              <div class="warn-evid">
+                <span class="ic"><svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg></span>
+                <span>Số TK <strong>98XX…2103</strong> nằm trong danh sách lừa đảo chính thức.</span>
+              </div>
+              <p class="warn-conf">Độ tin cậy <b>92%</b> · Kiểm tra bởi ShieldVN</p>
+              <div class="warn-foot">
+                <div class="warn-qr" aria-hidden="true"></div>
+                <div>
+                  <div class="wf-brand"><svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>ShieldVN</div>
+                  <div class="wf-url">Kiểm tra trước khi chuyển tiền</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="warn-actions">
+            <button class="btn btn-primary btn-sm">Lưu ảnh</button>
+            <button class="btn btn-ghost btn-sm"><svg class="icon icon-sm" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>Chia sẻ</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+  <p class="mock-note">Mockup tĩnh — không gọi API, mọi dữ liệu là mẫu. Palette theo <code>docs/app-icon.png</code> / <code>docs/logo-icon.png</code>. Tokens xem <code>docs/02-design-guidelines.md</code>.</p>
+</div>
+
+<script>
+  const btns=document.querySelectorAll('.chip-btn');
+  const views=document.querySelectorAll('.view');
+  btns.forEach(b=>b.addEventListener('click',()=>{
+    const t=b.dataset.target;
+    btns.forEach(x=>x.classList.toggle('is-active', x===b));
+    views.forEach(v=>v.classList.toggle('is-active', v.id===t));
+    window.scrollTo({top:0,behavior:'smooth'});
+  }));
+</script>
+</body>
+</html>
