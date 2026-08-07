@@ -32,7 +32,8 @@ func (s *GeminiService) Analyze(ctx context.Context, prompt string, imageBytes [
 Analyze the provided text and/or image for potential scams, focusing on common typologies in Vietnam (e.g., CTV recruitment scams requiring deposits, fake bills/transfers, impersonation of officials or VNeID). 
 If an image is provided (e.g. a transfer bill), check for signs of forgery like mismatched fonts, missing FT codes, or incorrect layouts.
 Extract any entities like bank accounts, phone numbers, or URLs.
-Return the result strictly as a structured JSON object matching the provided schema.`
+Return the result strictly as a structured JSON object matching the provided schema.
+IMPORTANT: Please provide the explanation of why it is a scam (evidence) and what to do after checking (recommendations) entirely in Vietnamese.`
 
 	// Define the schema for structured output
 	schema := &genai.Schema{
@@ -94,8 +95,22 @@ Return the result strictly as a structured JSON object matching the provided sch
 		parts = append(parts, genai.NewPartFromBytes(imageBytes, mimeType))
 	}
 
+	// Phase 04 will implement actual masking. For now, masked prompt is the same as the prompt.
+	maskedPrompt := prompt
+	slog.InfoContext(ctx, "DEBUG: LLM Inputs",
+		"input_message", prompt,
+		"masked_input_message", maskedPrompt,
+		"sent_to_llm", maskedPrompt,
+	)
+
 	// Retry logic (1 retry fallback)
 	var lastErr error
+	slog.InfoContext(ctx, "sending request to Gemini",
+		"model", modelName,
+		"prompt_len", len(prompt),
+		"has_image", len(imageBytes) > 0,
+		"image_size", len(imageBytes),
+	)
 	for i := 0; i < 2; i++ {
 		resp, err := s.client.Models.GenerateContent(ctx, modelName, []*genai.Content{
 			{
@@ -126,6 +141,11 @@ Return the result strictly as a structured JSON object matching the provided sch
 		}
 
 		// Success
+		slog.InfoContext(ctx, "received successful response from Gemini",
+			"risk_score", result.RiskScore,
+			"confidence", result.ConfidenceScore,
+			"attempt", i+1,
+		)
 		return &result, nil
 	}
 

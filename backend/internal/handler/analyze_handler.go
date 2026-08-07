@@ -10,7 +10,7 @@ import (
 )
 
 // AnalyzeHandler handles multipart text and image analysis requests.
-func AnalyzeHandler(geminiSvc *service.GeminiService) gin.HandlerFunc {
+func AnalyzeHandler(geminiSvc *service.GeminiService, blacklistSvc *service.BlacklistService) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		textPrompt := c.PostForm("text_prompt")
 		
@@ -61,6 +61,17 @@ func AnalyzeHandler(geminiSvc *service.GeminiService) gin.HandlerFunc {
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to analyze input", "details": err.Error()})
 			return
+		}
+
+		// Phase 03: Tier-1 Blacklist Lookup
+		blacklistHits := blacklistSvc.CheckTier1(c.Request.Context(), result.ExtractedEntities)
+		if len(blacklistHits) > 0 {
+			result.Evidence = append(result.Evidence, blacklistHits...)
+			// Escalate risk score to at least YELLOW if it's currently GREEN
+			if result.RiskScore == "GREEN" {
+				result.RiskScore = "YELLOW"
+			}
+			// Alternatively, you could escalate to RED, but we follow "at least YELLOW" as per plan
 		}
 
 		c.JSON(http.StatusOK, result)

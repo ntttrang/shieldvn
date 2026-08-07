@@ -15,6 +15,7 @@ import (
 	"shieldvn-backend/internal/handler/middleware"
 	"shieldvn-backend/internal/observability"
 	"shieldvn-backend/internal/service"
+	"shieldvn-backend/internal/store"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -50,6 +51,18 @@ func main() {
 		os.Exit(1)
 	}
 
+	// Step 5: Initialize Firestore and Blacklist Service
+	firestoreStore, err := store.NewFirestoreStore(ctx, cfg.GCPProjectID)
+	if err != nil {
+		slog.Warn("failed to initialize firestore store (ADC missing?), Tier-1 blacklist lookup will be disabled", "error", err)
+		// We proceed without Firestore to allow local development of other features
+		firestoreStore = nil
+	} else {
+		defer firestoreStore.Close()
+	}
+
+	blacklistSvc := service.NewBlacklistService(firestoreStore)
+
 	// Build Gin router.
 	router := gin.New()
 	router.Use(gin.Recovery())
@@ -76,7 +89,7 @@ func main() {
 	// API routes — Phase 01 fills in the real handler.
 	v1 := router.Group("/api/v1")
 	{
-		v1.POST("/analyze", handler.AnalyzeHandler(geminiSvc))
+		v1.POST("/analyze", handler.AnalyzeHandler(geminiSvc, blacklistSvc))
 	}
 
 	// Start HTTP server.
