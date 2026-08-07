@@ -12,21 +12,22 @@ import (
 )
 
 type GeminiService struct {
-	client *genai.Client
+	client    *genai.Client
+	modelName string
 }
 
-func NewGeminiService(ctx context.Context, apiKey string) (*GeminiService, error) {
+func NewGeminiService(ctx context.Context, apiKey string, modelName string) (*GeminiService, error) {
 	client, err := genai.NewClient(ctx, &genai.ClientConfig{
 		APIKey: apiKey,
 	})
 	if err != nil {
 		return nil, fmt.Errorf("failed to create gemini client: %w", err)
 	}
-	return &GeminiService{client: client}, nil
+	return &GeminiService{client: client, modelName: modelName}, nil
 }
 
 func (s *GeminiService) Analyze(ctx context.Context, prompt string, imageBytes []byte, mimeType string) (*model.AnalysisResult, error) {
-	modelName := "gemini-2.5-flash"
+	// modelName is provided via environment and stored in the service struct
 
 	systemInstruction := `You are ShieldVN, a privacy-first scam detection assistant for Vietnamese users. 
 Analyze the provided text and/or image for potential scams, focusing on common typologies in Vietnam (e.g., CTV recruitment scams requiring deposits, fake bills/transfers, impersonation of officials or VNeID). 
@@ -106,13 +107,13 @@ IMPORTANT: Please provide the explanation of why it is a scam (evidence) and wha
 	// Retry logic (1 retry fallback)
 	var lastErr error
 	slog.InfoContext(ctx, "sending request to Gemini",
-		"model", modelName,
+		"model", s.modelName,
 		"prompt_len", len(prompt),
 		"has_image", len(imageBytes) > 0,
 		"image_size", len(imageBytes),
 	)
 	for i := 0; i < 2; i++ {
-		resp, err := s.client.Models.GenerateContent(ctx, modelName, []*genai.Content{
+		resp, err := s.client.Models.GenerateContent(ctx, s.modelName, []*genai.Content{
 			{
 				Parts: parts,
 			},

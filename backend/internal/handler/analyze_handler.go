@@ -57,7 +57,8 @@ func AnalyzeHandler(geminiSvc *service.GeminiService, blacklistSvc *service.Blac
 			return
 		}
 
-		result, err := geminiSvc.Analyze(c.Request.Context(), textPrompt, imageBytes, mimeType)
+		sanitizedPrompt := service.NewPIISanitizer().Anonymize(textPrompt)
+		result, err := geminiSvc.Analyze(c.Request.Context(), sanitizedPrompt, imageBytes, mimeType)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to analyze input", "details": err.Error()})
 			return

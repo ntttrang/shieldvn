@@ -10,11 +10,12 @@ import (
 
 // Config holds application configuration loaded from environment variables.
 type Config struct {
-	Port           string
-	AllowedOrigin  string
-	GeminiAPIKey   string
-	LogLevel       string
-	GCPProjectID   string
+	Port            string
+	AllowedOrigin   string
+	GeminiAPIKey    string
+	GeminiModelName string
+	LogLevel        string
+	GCPProjectID    string
 }
 
 // Load reads configuration from environment variables with sensible defaults.
@@ -23,11 +24,12 @@ func Load() *Config {
 	_ = godotenv.Load()
 
 	return &Config{
-		Port:          getEnv("PORT", "8080"),
-		AllowedOrigin: getEnv("ALLOWED_ORIGIN", "http://localhost:3000"),
-		GeminiAPIKey:  os.Getenv("GEMINI_API_KEY"),
-		LogLevel:      getEnv("LOG_LEVEL", "info"),
-		GCPProjectID:  os.Getenv("GOOGLE_CLOUD_PROJECT"),
+		Port:            getEnv("PORT", "8080"),
+		AllowedOrigin:   getEnv("ALLOWED_ORIGIN", "http://localhost:3000"),
+		GeminiAPIKey:    os.Getenv("GEMINI_API_KEY"),
+		GeminiModelName: getEnv("GEMINI_MODEL_NAME", "gemini-2.5-flash-lite"),
+		LogLevel:        getEnv("LOG_LEVEL", "info"),
+		GCPProjectID:    os.Getenv("GOOGLE_CLOUD_PROJECT"),
 	}
 }
 

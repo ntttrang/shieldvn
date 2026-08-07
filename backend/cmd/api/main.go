@@ -45,7 +45,7 @@ func main() {
 	}
 
 	// Step 4: Initialize Gemini Service
-	geminiSvc, err := service.NewGeminiService(ctx, cfg.GeminiAPIKey)
+	geminiSvc, err := service.NewGeminiService(ctx, cfg.GeminiAPIKey, cfg.GeminiModelName)
 	if err != nil {
 		slog.Error("failed to initialize gemini service", "error", err)
 		os.Exit(1)
